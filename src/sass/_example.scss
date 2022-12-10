@@ -2,12 +2,6 @@
   display: none;
 }
 
-.show {
-  display: block;
-  margin-left: auto;
-  margin-right: auto
-}
-
 .container {
   background-color: #4FD1C5;
   padding-top: 30px;
@@ -70,7 +64,27 @@
   justify-content: center;
 }
 
+.end-of-page {
+  margin-left: auto;
+  margin-right: auto;
+  width: 250px;
+  height: 40px;
+  background-color: rgb(161, 151, 151);
+  border: 2px solid rgb(80, 76, 76);
+  border-radius: 7px;
+}
+
+.text-end {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
 .load-more {
+  display: none;
   min-width: 200px;
   min-height: 40px;
   font-family: 'Nunito', sans-serif;
@@ -90,6 +104,12 @@
   position: relative;
   padding: 10px;
   }
+
+  .show {
+  display: block;
+  margin-left: auto;
+  margin-right: auto
+}
 
 .load-more::before {
 content: '';

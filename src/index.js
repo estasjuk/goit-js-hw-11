@@ -23,17 +23,17 @@ const imagesApiService = new ImagesApiService();
 refs.searchForm.addEventListener("submit", onFormSubmit);
 refs.loadMoreBtn.addEventListener("click", onLoadMoreClick);
 
-
-
 function onFormSubmit(e) {
     e.preventDefault();
     clearData();
+    showLoadMoreBtn("remove");
     imagesApiService.searchValue = e.currentTarget.elements.searchQuery.value.trim();
     imagesApiService.resetPage();
     
     if (!imagesApiService.searchValue) {                 //the same: searchValue.length === 0
-        return getWarning();
+        return getInputWarning();
     }
+   
     showLoader("add");
     imagesApiService.fetchImages()
         .then(renderData)
@@ -41,13 +41,14 @@ function onFormSubmit(e) {
 }
     
 function onLoadMoreClick(e) { 
- imagesApiService.fetchImages()
+    showLoadMoreBtn("remove");
+    imagesApiService.fetchImages()
         .then(renderData)
         .catch(onFetchError)
 }
 
 function getMarkupOfImageGallery(images) { 
-    console.log(images);
+    //console.log(images);
     return images
             .map(image => {
                 return `<div class="photo-card">
@@ -72,18 +73,32 @@ function getMarkupOfImageGallery(images) {
         .join("");
 };
 
-function renderData(hits) {
- if (hits.length === 0) {
-        getWarning();
+function renderData(data) {
+    if (data.hits.length === 0) {
+        showLoadMoreBtn("remove");
+        getNoImageWarning();
+        
+    }
+    else if (imagesApiService.page === 2 && data.totalHits > 0) {
+        getSuccessWarning(data.totalHits);
+    }
+
+    else if (data.totalHits === data.hits.length) { 
+        getEndOfCollectionWarning();
     }
 
     showLoader("remove");
-    const markupGallery = getMarkupOfImageGallery(hits);
+    const markupGallery = getMarkupOfImageGallery(data.hits);
     refs.gallery.insertAdjacentHTML("beforeend", markupGallery);
+    showLoadMoreBtn("add");
  }
 
 function showLoader(method) {
     refs.preloader.classList[method]("show");
+};
+
+function showLoadMoreBtn(method) {
+    refs.loadMoreBtn.classList[method]("show");
 };
 
 function clearData() { 
@@ -92,9 +107,21 @@ function clearData() {
 
 function onFetchError() { 
     showLoader("remove");
-    return Notiflix.Notify.failure("");
+    return Notiflix.Notify.failure("Something wrong...");
 };
 
-function getWarning() { 
-        return Notiflix.Notify.info("Sorry, there are no images matching your search query. Please try again.");
+function getSuccessWarning(amount) { 
+    return Notiflix.Notify.info(`Hooray! We found ${amount} images.`);
+}
+
+function getInputWarning() { 
+    return Notiflix.Notify.info("Please enter your search details");
+}
+
+function getNoImageWarning() { 
+    return Notiflix.Notify.info("Sorry, there are no images matching your search query. Please try again.");
+}
+
+function getEndOfCollectionWarning() { 
+    return Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
 }
