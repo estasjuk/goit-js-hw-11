@@ -1,8 +1,8 @@
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
-import Notiflix from "notiflix";
+import SimpleLightbox from 'simplelightbox'
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from "axios";
 import ImagesApiService from "./image-service";
+import MessageService from './message-service';
 
 
 const refs = {
@@ -11,6 +11,7 @@ const refs = {
     gallery: document.querySelector(".gallery"),
     loadMoreBtn: document.querySelector(".load-more"),
     preloader: document.querySelector(".preloader"),
+    endOfPage: document.querySelector(".end-of-page"),
 };
 
 const gallery = new SimpleLightbox('.gallery a', {
@@ -19,6 +20,7 @@ const gallery = new SimpleLightbox('.gallery a', {
 });
 
 const imagesApiService = new ImagesApiService();
+const messageService = new MessageService();
 
 refs.searchForm.addEventListener("submit", onFormSubmit);
 refs.loadMoreBtn.addEventListener("click", onLoadMoreClick);
@@ -31,7 +33,7 @@ function onFormSubmit(e) {
     imagesApiService.resetPage();
     
     if (!imagesApiService.searchValue) {                 //the same: searchValue.length === 0
-        return getInputWarning();
+        return messageService.getInputWarning();
     }
    
     showLoader("add");
@@ -48,7 +50,6 @@ function onLoadMoreClick(e) {
 }
 
 function getMarkupOfImageGallery(images) { 
-    //console.log(images);
     return images
             .map(image => {
                 return `<div class="photo-card">
@@ -56,16 +57,16 @@ function getMarkupOfImageGallery(images) {
     <img src="${image.webformatURL}" alt="${image.tags}" width="360" height="240" loading="lazy" /></a>
     <div class="info">
     <p class="info-item">
-        <b>${image.likes} Likes</b>
+        <span><b>${image.likes}</b> Likes</span>
     </p>
     <p class="info-item">
-        <b>${image.views} Views</b>
+        <span><b>${image.views}</b> Views</span>
     </p>
     <p class="info-item">
-        <b>${image.comments} Comments</b>
+        <span><b>${image.comments}</b> Comments</span>
     </p>
     <p class="info-item">
-        <b>${image.downloads} Downloads</b>
+        <span><b>${image.downloads}</b> Downloads</span>
     </p>
     </div>
 </div>`;
@@ -76,15 +77,17 @@ function getMarkupOfImageGallery(images) {
 function renderData(data) {
     if (data.hits.length === 0) {
         showLoadMoreBtn("remove");
-        getNoImageWarning();
+        messageService.getNoImageWarning();
         
     }
     else if (imagesApiService.page === 2 && data.totalHits > 0) {
-        getSuccessWarning(data.totalHits);
+        messageService.getSuccessWarning(data.totalHits);
     }
 
     else if (data.totalHits === data.hits.length) { 
-        getEndOfCollectionWarning();
+        messageService.getEndOfCollectionWarning();
+        messageService.showEndOfPageMessage("add");
+        showLoadMoreBtn("remove");
     }
 
     showLoader("remove");
@@ -109,19 +112,3 @@ function onFetchError() {
     showLoader("remove");
     return Notiflix.Notify.failure("Something wrong...");
 };
-
-function getSuccessWarning(amount) { 
-    return Notiflix.Notify.info(`Hooray! We found ${amount} images.`);
-}
-
-function getInputWarning() { 
-    return Notiflix.Notify.info("Please enter your search details");
-}
-
-function getNoImageWarning() { 
-    return Notiflix.Notify.info("Sorry, there are no images matching your search query. Please try again.");
-}
-
-function getEndOfCollectionWarning() { 
-    return Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
-}

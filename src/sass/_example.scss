@@ -65,8 +65,10 @@
 }
 
 .end-of-page {
+  display: none;
   margin-left: auto;
   margin-right: auto;
+  padding: 7px;
   width: 250px;
   height: 40px;
   background-color: rgb(161, 151, 151);
@@ -74,13 +76,14 @@
   border-radius: 7px;
 }
 
-.text-end {
+.end-text {
   display: flex;
   justify-content: center;
-  align-items: center;
-  font-size: 16px;
+  align-items: baseline;
+  font-size: 20px;
   font-weight: bold;
   color: #ffffff;
+  margin: 0;
 }
 
 .load-more {
@@ -164,5 +167,10 @@ content: '';
     height: 300px;
     opacity: 0;
   }
+}
+
+.info {
+  border: 1px solid gray;
+  padding: 5px;
 }
 
