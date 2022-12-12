@@ -4,11 +4,12 @@ export default class ImagesApiService {
     constructor() {
         this.searchQuery = "";
         this.page = 1;
+        this.perPage = 40;
     }
 
     fetchImages() {
         const URL = `https://pixabay.com/api/?key=${API_KEY}`;
-        const searchParams = `&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`; 
+        const searchParams = `&image_type=photo&orientation=horizontal&safesearch=true&per_page=${this.perPage}&page=${this.page}`; 
         return fetch(`${URL}&q=${this.searchQuery}${searchParams}`)
         .then(response => {
             if (response.ok) {
@@ -18,7 +19,8 @@ export default class ImagesApiService {
         })
             .then((data) => {
                 this.incrementPage();
-                //console.log(this.page);
+                console.log(this.page);
+                console.log(data);
                 return data;
             })
     }

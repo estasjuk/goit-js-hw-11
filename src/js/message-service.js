@@ -2,6 +2,7 @@ import Notiflix from "notiflix";
 
 export default class MessageService {
     constructor() {
+        this.endOfPage = document.querySelector(".end-of-page");
     }
 
     getSuccessWarning(amount) { 
@@ -21,6 +22,6 @@ export default class MessageService {
     }
 
     showEndOfPageMessage(method) { 
-        refs.endOfPage.classList[method]("show");
+        this.endOfPage.classList[method]("show");
     }
 }
