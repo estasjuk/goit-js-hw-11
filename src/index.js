@@ -1,6 +1,6 @@
 import SimpleLightbox from 'simplelightbox'
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import axios from "axios";
+import Notiflix from "notiflix";
 import ImagesApiService from './js/image-service';
 import MessageService from './js/message-service';
 import AuxiliaryService from './js/auxiliary-service';
@@ -44,7 +44,7 @@ function onFormSubmit(e) {
         .then(renderData)
         .catch(onFetchError)
 }
-    
+
 function onLoadMoreClick(e) { 
     auxiliaryService.showLoadMoreBtn("remove");
     imagesApiService.fetchImages()
@@ -63,7 +63,6 @@ function renderData(data) {
     else {
         if (imagesApiService.page === 2 && data.totalHits > 0) {
             messageService.getSuccessWarning(data.totalHits);
-            
         }
         
         const markupGallery = getMarkupOfImageGallery(data.hits);
