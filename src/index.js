@@ -16,8 +16,8 @@ const refs = {
 };
 
 const gallery = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
+    captionsData: 'alt',
+    captionDelay: 250,
 });
 
 const imagesApiService = new ImagesApiService();
@@ -27,10 +27,11 @@ const auxiliaryService = new AuxiliaryService();
 refs.searchForm.addEventListener("submit", onFormSubmit);
 refs.loadMoreBtn.addEventListener("click", onLoadMoreClick);
 
-function onFormSubmit(e) {
-   
+async function onFormSubmit(e) {
+
     e.preventDefault();
     auxiliaryService.clearData();
+    messageService.showEndOfPageMessage("remove");
     auxiliaryService.showLoadMoreBtn("remove");
     imagesApiService.searchValue = e.currentTarget.elements.searchQuery.value.trim();
     imagesApiService.resetPage();
@@ -40,16 +41,25 @@ function onFormSubmit(e) {
     }
    
     auxiliaryService.showLoader("add");
-    imagesApiService.fetchImages()
-        .then(renderData)
-        .catch(onFetchError)
+
+    try {
+        const response = await imagesApiService.fetchImages();
+        renderData(response);
+    }
+    catch (error) {
+        onFetchError();
+    }
 }
 
-function onLoadMoreClick(e) { 
+async function onLoadMoreClick(e) { 
     auxiliaryService.showLoadMoreBtn("remove");
-    imagesApiService.fetchImages()
-        .then(renderData)
-        .catch(auxiliaryService.onFetchError)
+    try {
+        const response = await imagesApiService.fetchImages();
+        renderData(response);
+    }
+    catch {
+        onFetchError();
+     } 
 }
 
 function renderData(data) {
