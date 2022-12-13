@@ -30,13 +30,18 @@ export default class ImagesApiService {
     
     
     fetchImages() {
-        const URL = `https://pixabay.com/api/?key=${API_KEY}`;
-        const searchParams = `&image_type=photo&orientation=horizontal&safesearch=true&per_page=${this.perPage}&page=${this.page}`; 
-        return axios.get(`${URL}&q=${this.searchQuery}${searchParams}`)
-            .then(({ data }) => {
-                this.incrementPage();
-                return data;
-            })
+        try {
+            const URL = `https://pixabay.com/api/?key=${API_KEY}`;
+            const searchParams = `&image_type=photo&orientation=horizontal&safesearch=true&per_page=${this.perPage}&page=${this.page}`;
+            return axios.get(`${URL}&q=${this.searchQuery}${searchParams}`)
+                .then(({ data }) => {
+                    this.incrementPage();
+                    return data;
+                })
+        }
+        catch (error) { 
+            console.log("Error" + error);
+        }
     }
 
     incrementPage() { 
