@@ -49,6 +49,7 @@ async function onFormSubmit(e) {
     catch (error) {
         onFetchError();
     }
+    gallery.refresh();
 }
 
 async function onLoadMoreClick(e) { 
@@ -59,7 +60,8 @@ async function onLoadMoreClick(e) {
     }
     catch {
         onFetchError();
-     } 
+    }
+    gallery.refresh();
 }
 
 function renderData(data) {

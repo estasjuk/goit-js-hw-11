@@ -18,7 +18,5 @@ export function getMarkupOfImageGallery(images) {
         <span><b>${image.downloads}</b> Downloads</span>
     </p>
     </div>
-</div>`;
-            })
-        .join("");
+</div>`;}).join("");
 };
